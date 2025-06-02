@@ -16,6 +16,7 @@ struct ItemDetailView: View {
                     case .asset(let name):
                         Image(name)
                             .resizable()
+                        
                     }
                 }
                 .scaledToFit()
