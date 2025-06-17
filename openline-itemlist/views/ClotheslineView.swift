@@ -1,3 +1,4 @@
+// back to the stable version before trying the curved scroll nonsense
 import SwiftUI
 
 struct ClothingItem: Identifiable {
@@ -8,32 +9,33 @@ struct ClothingItem: Identifiable {
 }
 
 struct ClotheslineView: View {
-    let items: [ClothingItem]
-    let onAdd: (TodoItem) -> Void // 👈 this stays
+    let items: [ClothingItem] // the list of clothes I wanna scroll
+    let onAdd: (TodoItem) -> Void // keeping this to handle adding new items
 
-    @State private var selectedIndex = 0
-    @State private var showingNewItemSheet = false
+    @State private var selectedIndex = 0 // tracks which item is shown
+    @State private var showingNewItemSheet = false // toggles the new item modal
 
     var body: some View {
         GeometryReader { geo in
             ZStack {
-                Color.white.ignoresSafeArea()
+                Color.white.ignoresSafeArea() // plain white background
 
                 VStack(spacing: 0) {
-                    Image("openline-logo")
+                    Image("openline-logo") // app logo at top
                         .resizable()
                         .scaledToFit()
                         .frame(height: 60)
                         .padding(.top)
 
-                    Spacer().frame(height: 20)
+                    Spacer().frame(height: 20) // gap below logo
 
                     VStack(spacing: 4) {
-                        Text("“\(items[selectedIndex].title)”")
+                        Text("\"\(items[selectedIndex].title)\"") // clothing title
                             .font(.headline)
                             .multilineTextAlignment(.center)
+                            .foregroundColor(.black)
                             .transition(.opacity)
-                        Text("Author: \(items[selectedIndex].author)")
+                        Text("Author: \(items[selectedIndex].author)") // author name
                             .font(.subheadline)
                             .foregroundColor(.gray)
                             .transition(.opacity)
@@ -41,15 +43,16 @@ struct ClotheslineView: View {
                     .animation(.easeInOut, value: selectedIndex)
                     .padding(.horizontal)
 
-                    Spacer().frame(height: 30)
+                    Spacer().frame(height: 30) // gap before the clothesline
 
-                    ClotheslineCurve()
-                        .stroke(Color.orange.opacity(0.7), lineWidth: 2)
-                        .frame(height: 100)
+                    ClotheslineCurve() // curved line behind the clothes
+                        .stroke(Color.black, lineWidth: 2)
+                        .frame(height: 90)
                         .padding(.horizontal, 16)
 
+                    // just a normal swipeable tab view for now
                     TabView(selection: $selectedIndex) {
-                        ForEach(Array(items.enumerated()), id: \.offset) { index, item in
+                        ForEach(Array(items.enumerated()), id: \ .offset) { index, item in
                             ClothingItemView(imageName: item.imageName, swing: selectedIndex != index)
                                 .frame(width: geo.size.width, height: geo.size.height * 0.4)
                                 .tag(index)
@@ -61,7 +64,7 @@ struct ClotheslineView: View {
                     Spacer()
 
                     Button(action: {
-                        showingNewItemSheet = true
+                        showingNewItemSheet = true // opens add item modal
                     }) {
                         Image(systemName: "plus")
                             .resizable()
@@ -75,7 +78,6 @@ struct ClotheslineView: View {
                     }
                     .padding(.bottom, 32)
                     .sheet(isPresented: $showingNewItemSheet) {
-                        // ✅ Only pass `onAdd`. No `dismiss:` allowed.
                         NewItemView(onAdd: { item in
                             onAdd(item)
                             showingNewItemSheet = false
@@ -86,3 +88,4 @@ struct ClotheslineView: View {
         }
     }
 }
+
