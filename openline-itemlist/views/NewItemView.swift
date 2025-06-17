@@ -7,30 +7,42 @@ struct NewItemView: View {
     @State private var imageName = ""
 
     var onAdd: (TodoItem) -> Void
-    @Environment(\.dismiss) var dismiss
+    @Environment(\.dismiss) private var dismiss
 
     var body: some View {
         NavigationView {
             Form {
-                TextField("Title", text: $title)
-                TextField("Description", text: $description)
-
-                Picker("Image Type", selection: $imageType) {
-                    Text("System").tag("System")
-                    Text("Asset").tag("Asset")
+                Section(header: Text("Details")) {
+                    TextField("Title", text: $title)
+                    TextField("Description", text: $description)
                 }
 
-                TextField("Image Name", text: $imageName)
+                Section(header: Text("Image")) {
+                    Picker("Image Type", selection: $imageType) {
+                        Text("System").tag("System")
+                        Text("Asset").tag("Asset")
+                    }
+                    .pickerStyle(SegmentedPickerStyle())
+
+                    TextField("Image Name", text: $imageName)
+                }
             }
             .navigationTitle("Create a new task")
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Add") {
+                        guard !title.isEmpty, !imageName.isEmpty else { return }
+
                         let imageSource: TodoItem.ImageSource = (imageType == "System")
                             ? .system(imageName)
                             : .asset(imageName)
 
-                        let newItem = TodoItem(title: title, description: "", imageSource: imageSource)
+                        let newItem = TodoItem(
+                            title: title,
+                            description: description,
+                            imageSource: imageSource
+                        )
+
                         onAdd(newItem)
                         dismiss()
                     }
