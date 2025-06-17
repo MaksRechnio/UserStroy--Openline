@@ -10,8 +10,10 @@ struct TodoSwipeView: View {
     
     
     @State private var showingNewItemSheet = false
+    @GestureState private var isPressed = false
     @State private var itemForDetail: TodoItem?
     @State private var itemForEdit: TodoItem?
+    
     
     var body: some View {
         ZStack {
@@ -43,10 +45,24 @@ struct TodoSwipeView: View {
                 Button(action: {
                     showingNewItemSheet = true
                 }) {
-                    Label("Add Item", systemImage: "plus.circle.fill")
-                        .font(.title2)
-                        .padding()
+                    Image(systemName: "plus")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 24, height: 24)
+                        .foregroundColor(.white)
+                        .frame(width: 60, height: 60)
+                        .background(Color(red: 42/255, green: 139/255, blue: 186/255))
+                        .clipShape(Circle())
+                        .shadow(color: Color.black.opacity(0.2), radius: 4, x: 0, y: 2)
+                        .scaleEffect(isPressed ? 0.9 : 1.0)
+                        .animation(.spring(response: 0.3, dampingFraction: 0.5), value: isPressed)
                 }
+                .simultaneousGesture(
+                    DragGesture(minimumDistance: 0)
+                        .updating($isPressed) { _, isPressed, _ in
+                            isPressed = true
+                        }
+                )
             }
         }
         .sheet(isPresented: $showingNewItemSheet) {
