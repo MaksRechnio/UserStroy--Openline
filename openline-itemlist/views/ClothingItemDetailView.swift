@@ -83,10 +83,11 @@ struct ClothingItemDetailView: View {
                 Text(item.description)
                     .font(.body)
                     .foregroundColor(.black)
+                    .multilineTextAlignment(.leading) // I make sure it aligns nicely on the left
                     .frame(maxWidth: .infinity, alignment: .leading)
+                    .fixedSize(horizontal: false, vertical: true) // This is key: allows wrapping to height
                     .padding(.horizontal, 50)
-            }
-
+            } 
             Spacer()
         }
         .transition(.move(edge: .bottom).combined(with: .opacity))

@@ -14,12 +14,12 @@ struct MainClotheslineWrapper: View {
     
     init() {
         _clothingItems = .init(wrappedValue: load() ?? [
-            ClothingItem(imageName: "openline-tshirt-yellow", title: "Thread of Hope",description: "desc", author: "Jamal Idris"),
-            ClothingItem(imageName: "openline-sundress-beige", title: "Woven Words", description: "", author: "Leila Nguyen"),
-            ClothingItem(imageName: "openline-boxers-blue", title: "Against the Seam", description: "", author: "Carlos Romero"),
-            ClothingItem(imageName: "openline-pants-mint", title: "Aleikum of Hope", description: "", author: "Maud Leyley"),
-            ClothingItem(imageName: "openline-hoodie-purple", title: "Brr Brr patapim Words", description: "", author: "Luke Skywalker"),
-            ClothingItem(imageName: "openline-coat-red", title: "Isreal Against the Seam", description: "", author: "Pookie Wookie")
+            ClothingItem(imageName: "openline-tshirt-yellow", title: "Remote Work Forever",description: "Companies that force employees back into the office are ignoring how productive and balanced remote work can be.", author: "Jamal Idris"),
+            ClothingItem(imageName: "openline-sundress-beige", title: "Ban Microplastics", description: "The long-term environmental damage of microplastics outweighs the convenience they provide in products like cosmetics and clothes.", author: "Leila Nguyen"),
+            ClothingItem(imageName: "openline-boxers-blue", title: "AI Shouldn’t Replace Art", description: "AI can be a tool for creativity, but using it to mass-produce art devalues human emotion and expression in the creative process.", author: "Carlos Romero"),
+            ClothingItem(imageName: "openline-pants-mint", title: "Fast Fashion Must Go", description: "It’s unethical to support brands that exploit workers and the environment just to sell cheap, disposable clothes.", author: "Maud Leyley"),
+            ClothingItem(imageName: "openline-hoodie-purple", title: "No More Grading", description: "Traditional grades don’t reflect real learning. Education systems should focus on feedback and growth, not numbers and letters.", author: "Luke Skywalker"),
+            ClothingItem(imageName: "openline-coat-red", title: "Universal Basic Income Works", description: "Pilot programs show that a basic income improves mental health, productivity, and doesn’t reduce motivation to work.", author: "Pookie Wookie")
         ])
     }
 
