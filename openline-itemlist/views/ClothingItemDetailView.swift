@@ -30,7 +30,10 @@ struct ClothingItemDetailView: View {
 
             // Edit / X / Comment buttons
             HStack(spacing: 20) {
-                Button(action: {showEditSheet = true}) {
+                Button(action: {
+                    let impact = UIImpactFeedbackGenerator(style: .medium)
+                    impact.impactOccurred()
+                    showEditSheet = true}) {
                     Text("EDIT")
                         .font(.caption)
                         .foregroundColor(.white)
@@ -49,6 +52,7 @@ struct ClothingItemDetailView: View {
                         onDelete: onDelete,
                     )
                 }
+                
 
                 Button(action: onClose) {
                     Image(systemName: "xmark")

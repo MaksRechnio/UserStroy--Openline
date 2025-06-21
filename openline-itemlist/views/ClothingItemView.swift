@@ -35,6 +35,9 @@ struct ClothingItemView: View {
                 
             }
             .onTapGesture {
+                let impact = UIImpactFeedbackGenerator(style: .medium)
+                   impact.impactOccurred()
+
                 withAnimation(.easeInOut) {
                     onToggleExpand()
                 }
