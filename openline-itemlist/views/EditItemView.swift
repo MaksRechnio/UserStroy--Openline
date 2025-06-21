@@ -117,10 +117,14 @@ struct EditItemView: View {
                 Text("Title:")
                     .font(.subheadline)
                     .fontWeight(.semibold)
+                    .foregroundColor(.black) // make the heading black
+
                 TextField("Summarise your opinion into a topic", text: $title)
                     .padding()
-                    .background(Color(.systemGray6))
+                    .background(Color.white) // white box background
                     .cornerRadius(8)
+                    .shadow(color: .black.opacity(0.1), radius: 6, x: 0, y: 3) // soft shadow
+                    .foregroundColor(.black) // text typed in is black
             }
             .padding(.horizontal)
 
@@ -129,11 +133,17 @@ struct EditItemView: View {
                 Text("Description")
                     .font(.subheadline)
                     .fontWeight(.semibold)
+                    .foregroundColor(.black) // text typed in is black
+
+                
                 TextEditor(text: $description)
                     .frame(height: 100)
                     .padding(4)
-                    .background(Color(.systemGray6))
+                    .background(Color.white) // white box background
                     .cornerRadius(8)
+                    .shadow(color: .black.opacity(0.1), radius: 6, x: 0, y: 3) // soft shadow
+                    .foregroundColor(.black) // text typed in is black
+                    .environment(\.colorScheme, .light)
                     .overlay(
                         Group {
                             if description.isEmpty {

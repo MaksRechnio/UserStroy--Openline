@@ -96,36 +96,43 @@ struct NewItemView: View {
 
             // Title input
             VStack(alignment: .leading, spacing: 4) {
-                Text("Title:")
+                Text("Title:") // heading text
                     .font(.subheadline)
                     .fontWeight(.semibold)
-                TextField("Summarise your opinion into a topic", text: $title)
+                    .foregroundColor(.black) // make the heading black
+
+                TextField("", text: $title, prompt: Text("Summarise your opinion into a topic").foregroundColor(Color(hex: "#A9A9A9")))
                     .padding()
-                    .background(Color(.systemGray6))
+                    .background(Color.white) // white box background
                     .cornerRadius(8)
+                    .shadow(color: .black.opacity(0.1), radius: 6, x: 0, y: 3) // soft shadow
+                    .foregroundColor(.black) // text typed in is black
             }
             .padding(.horizontal)
 
-            // Description input
             VStack(alignment: .leading, spacing: 4) {
                 Text("Description")
                     .font(.subheadline)
                     .fontWeight(.semibold)
-                TextEditor(text: $description)
-                    .frame(height: 100)
-                    .padding(4)
-                    .background(Color(.systemGray6))
-                    .cornerRadius(8)
-                    .overlay(
-                        Group {
-                            if description.isEmpty {
-                                Text("Elaborate on the context of your opinion")
-                                    .foregroundColor(.gray)
-                                    .padding(8)
-                                    .allowsHitTesting(false)
-                            }
-                        }, alignment: .topLeading
-                    )
+                    .foregroundColor(.black) // heading in black
+
+                ZStack(alignment: .topLeading) {
+                    TextEditor(text: $description)
+                        .frame(height: 100)
+                        .padding(8)
+                        .background(Color.white) // white box background
+                        .cornerRadius(8)
+                        .shadow(color: .black.opacity(0.1), radius: 6, x: 0, y: 3) // soft shadow
+                        .foregroundColor(.black) // text typed in is black
+                        .environment(\.colorScheme, .light)
+
+                    if description.isEmpty {
+                        Text("Elaborate on the context of your opinion")
+                            .foregroundColor(Color(hex: "#A9A9A9"))
+                            .padding(12)
+                            .allowsHitTesting(false)
+                    }
+                }
             }
             .padding(.horizontal)
 
@@ -139,6 +146,8 @@ struct NewItemView: View {
         )
     }
 }
+
+
 
 
 
