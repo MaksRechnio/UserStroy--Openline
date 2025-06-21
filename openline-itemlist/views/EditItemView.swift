@@ -1,8 +1,10 @@
 import SwiftUI
 
-struct NewItemView: View {
+struct EditItemView: View {
     @Environment(\.dismiss) var dismiss
-    var onAdd: (ClothingItem) -> Void
+    var item: ClothingItem
+    var onEdit: (ClothingItem) -> Void
+    var onDelete: () -> Void
 
     // MARK: - Input States
     @State private var selectedIndex = 0
@@ -17,18 +19,34 @@ struct NewItemView: View {
         "openline-hoodie-purple",
         "openline-coat-red"
     ]
+    
+    init(item: ClothingItem, onEdit: @escaping (ClothingItem) -> Void, onDelete: @escaping () -> Void) {
+        self.item = item
+        self.onEdit = onEdit
+        self.onDelete = onDelete
+
+        _title = State(initialValue: item.title)
+        _description = State(initialValue: item.description)
+        _selectedIndex = clothingImages.count > 0 ? State(initialValue: clothingImages.firstIndex(of: item.imageName) ?? 0) : State(initialValue: 0)
+    }
 
     var body: some View {
         VStack(spacing: 16) {
             // Header with cancel and save buttons
             HStack {
-                Button(action: { dismiss() }) {
-                    Image("x-icon")
-                        .resizable()
-                        .frame(width: 16, height: 16)
-                        .padding()
-                }
-
+                Button(action: {
+                    onDelete()
+                    dismiss()
+                }) {
+                    Text("Delete")
+                        .font(.caption)
+                        .fontWeight(.bold)
+                        .foregroundColor(.white)
+                        .padding(.horizontal, 16)
+                        .padding(.vertical, 8)
+                        .background(Color(.red))
+                        .cornerRadius(8)
+                }.padding()
                 Spacer()
 
                 Button(action: {
@@ -36,18 +54,18 @@ struct NewItemView: View {
                         imageName: clothingImages[selectedIndex],
                         title: title,
                         description: description,
-                        author: ""
+                        author: item.author
                     )
-                    onAdd(newItem)
+                    onEdit(newItem)
                     dismiss()
                 }) {
-                    Text("SAVE")
+                    Text("Edit")
                         .font(.caption)
                         .fontWeight(.bold)
                         .foregroundColor(.white)
                         .padding(.horizontal, 16)
                         .padding(.vertical, 8)
-                        .background(Color(.yellow))
+                        .background(Color(.green))
                         .cornerRadius(8)
                 }
                 .disabled(title.isEmpty || description.isEmpty)
