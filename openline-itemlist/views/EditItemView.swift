@@ -1,16 +1,16 @@
 import SwiftUI
 
 struct EditItemView: View {
-    @Environment(\.dismiss) var dismiss
-    var item: ClothingItem
-    var onEdit: (ClothingItem) -> Void
-    var onDelete: () -> Void
+    @Environment(\.dismiss) var dismiss // this lets me close the sheet
+    var item: ClothingItem // the item I’m editing
+    var onEdit: (ClothingItem) -> Void // callback when I save the edits
+    var onDelete: () -> Void // callback if I want to delete this item
 
-    // MARK: - Input States
-    @State private var selectedIndex = 0
-    @State private var title = ""
-    @State private var description = ""
+    @State private var selectedIndex = 0 // this keeps track of which image is selected
+    @State private var title = "" // this is the text field for title
+    @State private var description = "" // same for description
 
+    // these are all the image options I can pick from
     let clothingImages = [
         "openline-tshirt-yellow",
         "openline-sundress-beige",
@@ -25,18 +25,21 @@ struct EditItemView: View {
         self.onEdit = onEdit
         self.onDelete = onDelete
 
+        // pre-fill title and description with what's already in the item
         _title = State(initialValue: item.title)
         _description = State(initialValue: item.description)
+        // try to match the current item's image to the list above
         _selectedIndex = clothingImages.count > 0 ? State(initialValue: clothingImages.firstIndex(of: item.imageName) ?? 0) : State(initialValue: 0)
     }
 
     var body: some View {
         VStack(spacing: 16) {
-            // Header with cancel and save buttons
+            // buttons at the top for deleting and saving
             HStack {
+                // delete button
                 Button(action: {
-                    onDelete()
-                    dismiss()
+                    onDelete() // call the delete
+                    dismiss()  // and close the sheet
                 }) {
                     Text("Delete")
                         .font(.caption)
@@ -47,17 +50,20 @@ struct EditItemView: View {
                         .background(Color(.red))
                         .cornerRadius(8)
                 }.padding()
+
                 Spacer()
 
+                // edit/save button
                 Button(action: {
+                    // make a new clothing item with the updated values
                     let newItem = ClothingItem(
                         imageName: clothingImages[selectedIndex],
                         title: title,
                         description: description,
                         author: item.author
                     )
-                    onEdit(newItem)
-                    dismiss()
+                    onEdit(newItem) // call the edit
+                    dismiss()       // and close the sheet
                 }) {
                     Text("Edit")
                         .font(.caption)
@@ -68,18 +74,19 @@ struct EditItemView: View {
                         .background(Color(.green))
                         .cornerRadius(8)
                 }
-                .disabled(title.isEmpty || description.isEmpty)
-                .opacity(title.isEmpty || description.isEmpty ? 0.4 : 1.0)
+                .disabled(title.isEmpty || description.isEmpty) // don’t allow save if fields are empty
+                .opacity(title.isEmpty || description.isEmpty ? 0.4 : 1.0) // visual feedback
                 .padding()
             }
 
-            // Clothing selector
+            // image selection label
             Text("Clothing type:")
                 .font(.headline)
                 .foregroundColor(.black)
-                
 
+            // image picker with arrows
             HStack {
+                // left arrow
                 Button(action: {
                     withAnimation {
                         selectedIndex = (selectedIndex - 1 + clothingImages.count) % clothingImages.count
@@ -88,11 +95,12 @@ struct EditItemView: View {
                     Image("arrow-icon")
                         .resizable()
                         .frame(width: 24, height: 24)
-                        .rotationEffect(.degrees(180))
+                        .rotationEffect(.degrees(180)) // make it point left
                 }
 
                 Spacer()
 
+                // show the image
                 Image(clothingImages[selectedIndex])
                     .resizable()
                     .scaledToFit()
@@ -100,6 +108,7 @@ struct EditItemView: View {
 
                 Spacer()
 
+                // right arrow
                 Button(action: {
                     withAnimation {
                         selectedIndex = (selectedIndex + 1) % clothingImages.count
@@ -112,45 +121,44 @@ struct EditItemView: View {
             }
             .padding(.horizontal, 32)
 
-            // Title input
+            // title input field
             VStack(alignment: .leading, spacing: 4) {
                 Text("Title:")
                     .font(.subheadline)
                     .fontWeight(.semibold)
-                    .foregroundColor(.black) // make the heading black
+                    .foregroundColor(.black)
 
                 TextField("Summarise your opinion into a topic", text: $title)
                     .padding()
-                    .background(Color.white) // white box background
+                    .background(Color.white)
                     .cornerRadius(8)
-                    .shadow(color: .black.opacity(0.1), radius: 6, x: 0, y: 3) // soft shadow
-                    .foregroundColor(.black) // text typed in is black
+                    .shadow(color: .black.opacity(0.1), radius: 6, x: 0, y: 3)
+                    .foregroundColor(.black)
             }
             .padding(.horizontal)
 
-            // Description input
+            // description input field
             VStack(alignment: .leading, spacing: 4) {
                 Text("Description")
                     .font(.subheadline)
                     .fontWeight(.semibold)
-                    .foregroundColor(.black) // text typed in is black
+                    .foregroundColor(.black)
 
-                
                 TextEditor(text: $description)
                     .frame(height: 100)
                     .padding(4)
-                    .background(Color.white) // white box background
+                    .background(Color.white)
                     .cornerRadius(8)
-                    .shadow(color: .black.opacity(0.1), radius: 6, x: 0, y: 3) // soft shadow
-                    .foregroundColor(.black) // text typed in is black
-                    .environment(\.colorScheme, .light)
+                    .shadow(color: .black.opacity(0.1), radius: 6, x: 0, y: 3)
+                    .foregroundColor(.black)
+                    .environment(\.colorScheme, .light) // make sure it's in light mode
                     .overlay(
                         Group {
                             if description.isEmpty {
                                 Text("Elaborate on the context of your opinion")
                                     .foregroundColor(.gray)
                                     .padding(8)
-                                    .allowsHitTesting(false)
+                                    .allowsHitTesting(false) // make sure this doesn’t block typing
                             }
                         }, alignment: .topLeading
                     )
@@ -167,66 +175,3 @@ struct EditItemView: View {
         )
     }
 }
-
-
-
-
-//import SwiftUI
-//
-//struct NewItemView: View {
-//    @State private var title = ""
-//    @State private var description = ""
-//    @State private var imageType = "System"
-//    @State private var imageName = ""
-//
-//    var onAdd: (TodoItem) -> Void
-//    @Environment(\.dismiss) private var dismiss
-//
-//    var body: some View {
-//        NavigationView {
-//            Form {
-//                Section(header: Text("Details")) {
-//                    TextField("Title", text: $title)
-//                    TextField("Description", text: $description)
-//                }
-//
-//                Section(header: Text("Image")) {
-//                    Picker("Image Type", selection: $imageType) {
-//                        Text("System").tag("System")
-//                        Text("Asset").tag("Asset")
-//                    }
-//                    .pickerStyle(SegmentedPickerStyle())
-//
-//                    TextField("Image Name", text: $imageName)
-//                }
-//            }
-//            .navigationTitle("Create a new task")
-//            .toolbar {
-//                ToolbarItem(placement: .confirmationAction) {
-//                    Button("Add") {
-//                        guard !title.isEmpty, !imageName.isEmpty else { return }
-//
-//                        let imageSource: TodoItem.ImageSource = (imageType == "System")
-//                            ? .system(imageName)
-//                            : .asset(imageName)
-//
-//                        let newItem = TodoItem(
-//                            title: title,
-//                            description: description,
-//                            imageSource: imageSource
-//                        )
-//
-//                        onAdd(newItem)
-//                        dismiss()
-//                    }
-//                }
-//
-//                ToolbarItem(placement: .cancellationAction) {
-//                    Button("Cancel", role: .cancel) {
-//                        dismiss()
-//                    }
-//                }
-//            }
-//        }
-//    }
-//}

@@ -1,39 +1,42 @@
 import SwiftUI
 
+// this is the view that shows a full detail page for a clothing item
 struct ClothingItemDetailView: View {
-    let item: ClothingItem
-    var onClose: () -> Void
-    var onEdit: (ClothingItem) -> Void
-    var onDelete: () -> Void
-    var onComment: () -> Void
+    let item: ClothingItem // the actual clothing item data I pass in
+    var onClose: () -> Void // what happens when I tap the X
+    var onEdit: (ClothingItem) -> Void // used if I edit the item
+    var onDelete: () -> Void // if I wanna delete the item
+    var onComment: () -> Void // if I tap "Comment"
 
-    @Namespace private var animation
-    @State private var showEditSheet = false
+    @Namespace private var animation // used for animations if I ever need one
+    @State private var showEditSheet = false // keeps track of whether edit screen is open
 
     var body: some View {
         VStack(spacing: 12) {
-            Spacer(minLength: 20)
+            Spacer(minLength: 20) // gives it breathing room from the top
 
-            // Title & Subtitle (stacked)
+            // the title block with quotes and gold colour
             VStack(spacing: 4) {
                 Text("\"\(item.title)\"")
                     .font(.headline)
-                    .foregroundColor(Color(hex: "#D0A249"))
+                    .foregroundColor(Color(hex: "#D0A249")) // I’m using a custom hex color
                     .multilineTextAlignment(.center)
             }
             .padding(.horizontal)
 
-            // Author
+            // author line right below the title
             Text("Author: \(item.author)")
                 .font(.footnote)
                 .foregroundColor(.gray)
 
-            // Edit / X / Comment buttons
+            // Edit / Close (X) / Comment buttons in a row
             HStack(spacing: 20) {
                 Button(action: {
+                    // I added a little haptic tap so it feels nice
                     let impact = UIImpactFeedbackGenerator(style: .medium)
                     impact.impactOccurred()
-                    showEditSheet = true}) {
+                    showEditSheet = true
+                }) {
                     Text("EDIT")
                         .font(.caption)
                         .foregroundColor(.white)
@@ -42,18 +45,19 @@ struct ClothingItemDetailView: View {
                         .background(Color.orange)
                         .cornerRadius(6)
                 }
+                // when the sheet shows up, I pass the item and handlers
                 .sheet(isPresented: $showEditSheet) {
                     EditItemView(
                         item: item,
                         onEdit: { item in
-                            showEditSheet = false
-                            onEdit(item)
+                            showEditSheet = false // close the sheet
+                            onEdit(item) // update the item
                         },
-                        onDelete: onDelete,
+                        onDelete: onDelete // just forward the delete handler
                     )
                 }
-                
 
+                // this is the X button to close the view
                 Button(action: onClose) {
                     Image(systemName: "xmark")
                         .foregroundColor(.black)
@@ -63,6 +67,7 @@ struct ClothingItemDetailView: View {
                         .shadow(radius: 1)
                 }
 
+                // comment button just triggers the passed handler
                 Button(action: onComment) {
                     Text("Comment")
                         .font(.caption)
@@ -75,30 +80,31 @@ struct ClothingItemDetailView: View {
             }
             .padding(.top, 8)
 
-            // Description Block
+            // Description section with title and the actual description
             VStack(spacing: 6) {
                 Text("Description")
                     .font(.headline)
                     .padding(.bottom, 4)
                     .foregroundColor(Color(.black))
                     .frame(maxWidth: .infinity, alignment: .leading)
-                    .padding(.horizontal, 50)
+                    .padding(.horizontal, 50) // keeping it symmetrical
 
                 Text(item.description)
                     .font(.body)
                     .foregroundColor(.black)
-                    .multilineTextAlignment(.leading) // I make sure it aligns nicely on the left
+                    .multilineTextAlignment(.leading) // aligns left and wraps
                     .frame(maxWidth: .infinity, alignment: .leading)
-                    .fixedSize(horizontal: false, vertical: true) // This is key: allows wrapping to height
+                    .fixedSize(horizontal: false, vertical: true) // lets it grow down naturally
                     .padding(.horizontal, 50)
-            } 
-            Spacer()
+            }
+
+            Spacer() // pushes everything to top
         }
-        .transition(.move(edge: .bottom).combined(with: .opacity))
+        .transition(.move(edge: .bottom).combined(with: .opacity)) // smooth slide-in animation
     }
 }
 
-// Color from HEX helper
+// this is a helper I added so I can use hex strings like "#D0A249"
 extension Color {
     init(hex: String) {
         let scanner = Scanner(string: hex)

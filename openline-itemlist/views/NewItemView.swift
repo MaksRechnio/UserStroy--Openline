@@ -1,14 +1,14 @@
 import SwiftUI
 
 struct NewItemView: View {
-    @Environment(\.dismiss) var dismiss
-    var onAdd: (ClothingItem) -> Void
+    @Environment(\.dismiss) var dismiss // lets me close the view when needed
+    var onAdd: (ClothingItem) -> Void // function that runs when I add the new item
 
-    // MARK: - Input States
-    @State private var selectedIndex = 0
-    @State private var title = ""
-    @State private var description = ""
+    @State private var selectedIndex = 0 // keeps track of which clothing image is selected
+    @State private var title = "" // text for the title input
+    @State private var description = "" // text for the description input
 
+    // list of clothing image names that I can scroll through
     let clothingImages = [
         "openline-tshirt-yellow",
         "openline-sundress-beige",
@@ -20,8 +20,9 @@ struct NewItemView: View {
 
     var body: some View {
         VStack(spacing: 16) {
-            // Header with cancel and save buttons
+            // header with a cancel (X) button and a save button
             HStack {
+                // cancel button just closes the sheet
                 Button(action: { dismiss() }) {
                     Image("x-icon")
                         .resizable()
@@ -31,15 +32,16 @@ struct NewItemView: View {
 
                 Spacer()
 
+                // save button creates a new item and runs onAdd
                 Button(action: {
                     let newItem = ClothingItem(
                         imageName: clothingImages[selectedIndex],
                         title: title,
                         description: description,
-                        author: ""
+                        author: "" // I’m not entering author here so it's left empty
                     )
-                    onAdd(newItem)
-                    dismiss()
+                    onAdd(newItem) // I pass it to the function from the parent
+                    dismiss() // then close the view
                 }) {
                     Text("SAVE")
                         .font(.caption)
@@ -50,18 +52,19 @@ struct NewItemView: View {
                         .background(Color(.yellow))
                         .cornerRadius(8)
                 }
-                .disabled(title.isEmpty || description.isEmpty)
-                .opacity(title.isEmpty || description.isEmpty ? 0.4 : 1.0)
+                .disabled(title.isEmpty || description.isEmpty) // disables the button if inputs are empty
+                .opacity(title.isEmpty || description.isEmpty ? 0.4 : 1.0) // fade effect if disabled
                 .padding()
             }
 
-            // Clothing selector
+            // title for the clothing selector
             Text("Clothing type:")
                 .font(.headline)
                 .foregroundColor(.black)
-                
 
+            // image selector with left/right arrows
             HStack {
+                // left arrow moves backwards
                 Button(action: {
                     withAnimation {
                         selectedIndex = (selectedIndex - 1 + clothingImages.count) % clothingImages.count
@@ -70,11 +73,12 @@ struct NewItemView: View {
                     Image("arrow-icon")
                         .resizable()
                         .frame(width: 24, height: 24)
-                        .rotationEffect(.degrees(180))
+                        .rotationEffect(.degrees(180)) // flips the arrow to face left
                 }
 
                 Spacer()
 
+                // show the selected clothing image
                 Image(clothingImages[selectedIndex])
                     .resizable()
                     .scaledToFit()
@@ -82,6 +86,7 @@ struct NewItemView: View {
 
                 Spacer()
 
+                // right arrow moves forward
                 Button(action: {
                     withAnimation {
                         selectedIndex = (selectedIndex + 1) % clothingImages.count
@@ -94,38 +99,42 @@ struct NewItemView: View {
             }
             .padding(.horizontal, 32)
 
-            // Title input
+            // title input field
             VStack(alignment: .leading, spacing: 4) {
-                Text("Title:") // heading text
+                Text("Title:") // heading above the input
                     .font(.subheadline)
                     .fontWeight(.semibold)
-                    .foregroundColor(.black) // make the heading black
+                    .foregroundColor(.black)
 
+                // the input itself with placeholder in grey
                 TextField("", text: $title, prompt: Text("Summarise your opinion into a topic").foregroundColor(Color(hex: "#A9A9A9")))
                     .padding()
-                    .background(Color.white) // white box background
+                    .background(Color.white)
                     .cornerRadius(8)
-                    .shadow(color: .black.opacity(0.1), radius: 6, x: 0, y: 3) // soft shadow
-                    .foregroundColor(.black) // text typed in is black
+                    .shadow(color: .black.opacity(0.1), radius: 6, x: 0, y: 3)
+                    .foregroundColor(.black)
             }
             .padding(.horizontal)
 
+            // description input field
             VStack(alignment: .leading, spacing: 4) {
-                Text("Description")
+                Text("Description") // heading above the input
                     .font(.subheadline)
                     .fontWeight(.semibold)
-                    .foregroundColor(.black) // heading in black
+                    .foregroundColor(.black)
 
                 ZStack(alignment: .topLeading) {
+                    // text editor for entering the description
                     TextEditor(text: $description)
                         .frame(height: 100)
                         .padding(8)
-                        .background(Color.white) // white box background
+                        .background(Color.white)
                         .cornerRadius(8)
-                        .shadow(color: .black.opacity(0.1), radius: 6, x: 0, y: 3) // soft shadow
-                        .foregroundColor(.black) // text typed in is black
+                        .shadow(color: .black.opacity(0.1), radius: 6, x: 0, y: 3)
+                        .foregroundColor(.black)
                         .environment(\.colorScheme, .light)
 
+                    // placeholder text if empty
                     if description.isEmpty {
                         Text("Elaborate on the context of your opinion")
                             .foregroundColor(Color(hex: "#A9A9A9"))
@@ -136,78 +145,13 @@ struct NewItemView: View {
             }
             .padding(.horizontal)
 
-            Spacer()
+            Spacer() // pushes everything up
         }
         .padding(.top)
         .background(
             RoundedRectangle(cornerRadius: 20)
                 .fill(Color.white)
-                .shadow(radius: 8)
+                .shadow(radius: 8) // gives the whole card a soft shadow
         )
     }
 }
-
-
-
-
-
-
-//import SwiftUI
-//
-//struct NewItemView: View {
-//    @State private var title = ""
-//    @State private var description = ""
-//    @State private var imageType = "System"
-//    @State private var imageName = ""
-//
-//    var onAdd: (TodoItem) -> Void
-//    @Environment(\.dismiss) private var dismiss
-//
-//    var body: some View {
-//        NavigationView {
-//            Form {
-//                Section(header: Text("Details")) {
-//                    TextField("Title", text: $title)
-//                    TextField("Description", text: $description)
-//                }
-//
-//                Section(header: Text("Image")) {
-//                    Picker("Image Type", selection: $imageType) {
-//                        Text("System").tag("System")
-//                        Text("Asset").tag("Asset")
-//                    }
-//                    .pickerStyle(SegmentedPickerStyle())
-//
-//                    TextField("Image Name", text: $imageName)
-//                }
-//            }
-//            .navigationTitle("Create a new task")
-//            .toolbar {
-//                ToolbarItem(placement: .confirmationAction) {
-//                    Button("Add") {
-//                        guard !title.isEmpty, !imageName.isEmpty else { return }
-//
-//                        let imageSource: TodoItem.ImageSource = (imageType == "System")
-//                            ? .system(imageName)
-//                            : .asset(imageName)
-//
-//                        let newItem = TodoItem(
-//                            title: title,
-//                            description: description,
-//                            imageSource: imageSource
-//                        )
-//
-//                        onAdd(newItem)
-//                        dismiss()
-//                    }
-//                }
-//
-//                ToolbarItem(placement: .cancellationAction) {
-//                    Button("Cancel", role: .cancel) {
-//                        dismiss()
-//                    }
-//                }
-//            }
-//        }
-//    }
-//}
